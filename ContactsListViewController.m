@@ -39,9 +39,10 @@
     [super awakeFromNib];
 }
 - (IBAction)done:(id)sender {
+    [self.navigationController popViewControllerAnimated:YES];
     
     if (_addPersonBlock!=nil) {
-        _addPersonBlock([_addressBook copy]);
+        _addPersonBlock([_addedPerson copy]);
     }
 
 }
@@ -49,6 +50,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"ContactTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+    
+    if (!self.doneButton) {
+       self.doneButton =[[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done:)];
+        
+        self.navigationItem.rightBarButtonItem = _doneButton;
+    }
+
     
     _addedPerson = [NSMutableArray array];
     
@@ -62,11 +72,7 @@
     [self.searchDisplayController.searchResultsTableView registerNib:[UINib nibWithNibName:@"SearchTableViewCell" bundle:nil] forCellReuseIdentifier:@"SearchCell"];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
+
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
